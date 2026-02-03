@@ -146,21 +146,25 @@ class Converter:
         
         ######################
 
+        # Fix palochkas which are incorrectly capital but within a word
+        text = re.sub(f"(?<=[{all_letters}])Ӏ", "ӏ", text)
+
+        # Fix palochkas which are written as '1' or '|'
         text = re.sub(f"(?<=[{all_letters}])[|1]|[|1](?=[{all_letters}])", "ӏ", text)
 
+        # Split into tokens
         tokens = re.findall(f"[{all_letters}]+|[{punct}]+|[0-9]+|[^{all_letters}{punct}0-9]+", text)
 
+        # Convert to the meta-orthography
         for i in range(len(tokens)):
             if re.fullmatch(f"[{all_letters}]+", tokens[i]):
                 for bad, good in self._ortho_to_meta.items():
                     tokens[i] = re.sub(bad, good, tokens[i])
         text = "".join(tokens)
 
+        # Convert to the target orthography
         for letter in self._ortho_table:
             text = re.sub(letter, self._ortho_table[letter][lang_target], text)
-        
-        if target in ("ipa", "cauc"):
-            re.sub("’", "ʼ", text)
         
         return ConverterOutput(text, lang=self.lang, orig=orig, target=target)
 
