@@ -146,6 +146,11 @@ class Converter:
         
         ######################
 
+        # TO-DO: Fix palochkas which are incorrectly written as I if Cyrillic
+        #
+        #
+        #
+
         # Fix palochkas which are incorrectly capital but within a word
         text = re.sub(f"(?<=[{all_letters}])Ӏ", "ӏ", text)
 
